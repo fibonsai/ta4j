@@ -22,8 +22,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * This package can be used to generate
- * {@link org.ta4j.core.reports.PerformanceReport performance} and
- * {@link org.ta4j.core.reports.TradingStatement trading} reports.
+ * Reporting utilities for summarizing strategy performance and position stats.
+ *
+ * <p>Generators produce immutable report objects from a {@link org.ta4j.core.TradingRecord}
+ * and {@link org.ta4j.core.BarSeries}, including:
+ * <ul>
+ * <li>{@link org.ta4j.core.reports.PerformanceReport} - aggregate performance metrics</li>
+ * <li>{@link org.ta4j.core.reports.PositionStatsReport} - per-position statistics</li>
+ * <li>{@link org.ta4j.core.reports.TradingStatement} - combined report for a strategy run</li>
+ * </ul>
  */
 package org.ta4j.core.reports;

@@ -23,6 +23,13 @@
  */
 package org.ta4j.core.num;
 
+/**
+ * Factory for creating {@link Num} instances with a consistent precision model.
+ *
+ * <p>Each {@link org.ta4j.core.BarSeries} exposes a factory that must be used to
+ * construct compatible numbers for that series, ensuring arithmetic consistency
+ * across indicators and criteria.
+ */
 public interface NumFactory {
 
     /**

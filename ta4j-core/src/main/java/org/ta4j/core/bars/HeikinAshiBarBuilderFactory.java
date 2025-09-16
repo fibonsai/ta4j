@@ -27,6 +27,12 @@ import org.ta4j.core.BarBuilder;
 import org.ta4j.core.BarBuilderFactory;
 import org.ta4j.core.BarSeries;
 
+/**
+ * Factory that produces {@link HeikinAshiBarBuilder} bound to a target series.
+ *
+ * <p>Ensures compatibility with the series' numeric type and enables
+ * Heikin-Ashi bar construction for use with aggregators and visualizations.
+ */
 public class HeikinAshiBarBuilderFactory implements BarBuilderFactory {
 
     @Override

@@ -26,7 +26,11 @@ package org.ta4j.core.criteria;
 import org.ta4j.core.AnalysisCriterion;
 
 /**
- * An abstract analysis criterion.
+ * Base class for {@link org.ta4j.core.AnalysisCriterion} implementations.
+ *
+ * <p>Provides shared utilities (e.g., readable {@link #toString()}) and serves
+ * as a common parent for concrete criteria such as drawdown, returns, and
+ * position statistics.
  */
 public abstract class AbstractAnalysisCriterion implements AnalysisCriterion {
 

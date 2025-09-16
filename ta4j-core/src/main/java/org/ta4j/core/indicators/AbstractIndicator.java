@@ -29,7 +29,12 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 
 /**
- * Abstract {@link Indicator indicator}.
+ * Base class for concrete {@link Indicator} implementations.
+ *
+ * <p>Stores a reference to the underlying {@link BarSeries} and provides a
+ * common logger and {@link #toString()} implementation. Prefer extending
+ * {@link CachedIndicator} to benefit from result caching unless your indicator
+ * is trivial to compute.
  */
 public abstract class AbstractIndicator<T> implements Indicator<T> {
 

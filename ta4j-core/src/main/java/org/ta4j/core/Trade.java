@@ -31,17 +31,19 @@ import org.ta4j.core.analysis.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
 
 /**
- * A {@code Trade} is defined by:
+ * Immutable execution record representing a single BUY or SELL operation.
  *
+ * <p>A {@code Trade} captures the bar index where it occurred, its
+ * {@link TradeType}, the execution price (raw and net of transaction cost),
+ * and the traded amount. Two complementary trades form a {@link Position}.
+ *
+ * <h2>Relationships</h2>
  * <ul>
- * <li>the index (in the {@link BarSeries bar series}) on which the trade is
- * executed
- * <li>a {@link TradeType type} (BUY or SELL)
- * <li>a pricePerAsset (optional)
- * <li>a trade amount (optional)
+ * <li>Trades are created directly or via convenience constructors that infer
+ *     prices from a {@link BarSeries}</li>
+ * <li>Transaction costs are computed using a {@link org.ta4j.core.analysis.cost.CostModel}</li>
+ * <li>Used by {@link TradingRecord} to build {@link Position positions}</li>
  * </ul>
- *
- * A {@link Position position} is a pair of complementary trades.
  */
 public class Trade implements Serializable {
 

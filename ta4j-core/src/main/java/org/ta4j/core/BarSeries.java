@@ -31,16 +31,19 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * A {@code BarSeries} is a sequence of {@link Bar bars} separated by a
- * predefined period (e.g. 15 minutes, 1 day, etc.).
+ * Ordered collection of {@link Bar} objects used as the data backbone for ta4j.
  *
- * Notably, it can be:
+ * <p>A {@code BarSeries} represents a time-ordered sequence of bars with a
+ * consistent aggregation period. It is the canonical source for
+ * {@link Indicator} computations, rule evaluation, {@link Strategy}
+ * execution, and performance analysis.
  *
+ * <h2>Key characteristics</h2>
  * <ul>
- * <li>the base of {@link Indicator indicator} calculations
- * <li>constrained between beginning and ending indices (e.g. for some
- * backtesting cases)
- * <li>limited to a fixed number of bars (e.g. for actual trading)
+ * <li>Supports constrained windows for focused backtests</li>
+ * <li>Supports a rolling window via {@link #setMaximumBarCount(int)}</li>
+ * <li>Maintains index stability even when leading bars are removed</li>
+ * <li>Guarantees numeric consistency through {@link #numFactory()}</li>
  * </ul>
  */
 public interface BarSeries extends Serializable {

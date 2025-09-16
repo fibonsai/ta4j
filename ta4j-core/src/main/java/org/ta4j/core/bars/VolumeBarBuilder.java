@@ -36,8 +36,10 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * A volume bar is sampled after a fixed number of contracts (volume) have been
- * traded.
+ * Builder for volume-based bars that close after a fixed number of contracts.
+ *
+ * <p>Accumulates ticks until the configured volume threshold is reached; then
+ * emits a bar snapshot and carries any volume remainder to the next bar.
  */
 public class VolumeBarBuilder implements BarBuilder {
 

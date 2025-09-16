@@ -28,7 +28,15 @@ import org.slf4j.LoggerFactory;
 import org.ta4j.core.Rule;
 
 /**
- * An abstract trading {@link Rule rule}.
+ * Base class for trading {@link Rule} implementations.
+ *
+ * <p>Provides a shared logger and the {@link #traceIsSatisfied(int, boolean)}
+ * helper to emit trace-level evaluation diagnostics. Concrete rules are
+ * encouraged to call this method in their {@code isSatisfied(...)}
+ * implementation to aid debugging and analysis.
+ *
+ * <p>Rules should be stateless and immutable where possible so they can be
+ * reused across strategies and threads.
  */
 public abstract class AbstractRule implements Rule {
 

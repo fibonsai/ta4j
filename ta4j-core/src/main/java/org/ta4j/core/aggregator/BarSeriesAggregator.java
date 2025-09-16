@@ -26,12 +26,18 @@ package org.ta4j.core.aggregator;
 import org.ta4j.core.BarSeries;
 
 /**
- * Aggregates a {@link BarSeries} into another one.
+ * Aggregates a {@link BarSeries} into a new series using a defined aggregation policy.
+ *
+ * <p>This interface bridges {@link BarAggregator} (which operates on lists of
+ * bars) and the {@link BarSeries} abstraction. Implementations typically
+ * convert the input series to a list, delegate to a {@code BarAggregator}, and
+ * produce a new {@link org.ta4j.core.BaseBarSeries} via
+ * {@link org.ta4j.core.BaseBarSeriesBuilder}.
  */
 public interface BarSeriesAggregator {
 
     /**
-     * Aggregates the {@code series} into another one.
+     * Aggregates the {@code series} into a new series preserving the input name.
      *
      * @param series the series to be aggregated
      * @return aggregated series
@@ -41,7 +47,7 @@ public interface BarSeriesAggregator {
     }
 
     /**
-     * Aggregates the {@code series} into another one.
+     * Aggregates the {@code series} into a new series with a custom name.
      *
      * @param series               the series to be aggregated
      * @param aggregatedSeriesName the name for the aggregated series

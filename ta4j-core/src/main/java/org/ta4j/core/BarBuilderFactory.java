@@ -24,7 +24,21 @@
 package org.ta4j.core;
 
 /**
- * A factory that provides a builder for a bar.
+ * Factory for producing {@link BarBuilder} instances compatible with a given
+ * {@link BarSeries}.
+ *
+ * <p>The returned builder will generate {@link Bar} objects that use the same
+ * numerical precision (Num implementation) as the target series. This
+ * abstraction allows the core to support multiple numeric backends while
+ * keeping bar construction consistent for indicators, rules, and strategies.
+ *
+ * <h2>Relationship to other components</h2>
+ * <ul>
+ * <li>Used by {@link BarSeries} implementations (e.g., {@link BaseBarSeries})
+ *     to expose a series-compatible {@link BarBuilder}</li>
+ * <li>Implementations live under {@code org.ta4j.core.bars.*} (e.g.,
+ *     TimeBarBuilderFactory)</li>
+ * </ul>
  */
 public interface BarBuilderFactory {
 

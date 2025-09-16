@@ -42,6 +42,9 @@ import org.ta4j.core.num.NumFactory;
 
 /**
  * Common utilities and helper methods for {@link BarSeries}.
+ *
+ * <p>Includes aggregation helpers, data consistency checks (missing/overlapping
+ * bars), conversion between numeric precisions, and safe series appends.
  */
 public final class BarSeriesUtils {
 

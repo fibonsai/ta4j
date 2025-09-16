@@ -28,8 +28,12 @@ import org.ta4j.core.BaseBar;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
-/*
- * Heikin-Ashi bar builder
+/**
+ * Builder for Heikin-Ashi bars derived from standard OHLC values.
+ *
+ * <p>Computes Heikin-Ashi open/close/high/low per bar, using the previous HA
+ * open/close when provided to ensure continuity across the series.
+ *
  * @see <a href="https://www.investopedia.com/trading/heikin-ashi-better-candlestick/">Heikin-Ashi</a>
  */
 public class HeikinAshiBarBuilder extends TimeBarBuilder {

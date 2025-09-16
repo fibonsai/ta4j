@@ -31,7 +31,11 @@ import org.ta4j.core.num.DecimalNumFactory;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * A builder to build a new {@link BaseBarSeries}.
+ * Builder for constructing {@link BaseBarSeries} instances with consistent configuration.
+ *
+ * <p>Encapsulates the series' name, initial bars, maximum bar count, numeric
+ * precision via {@link org.ta4j.core.num.NumFactory}, and the
+ * {@link BarBuilderFactory} used for compatible bar construction.
  */
 public class BaseBarSeriesBuilder implements BarSeriesBuilder {
 

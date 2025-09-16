@@ -27,6 +27,12 @@ import org.ta4j.core.BarBuilder;
 import org.ta4j.core.BarBuilderFactory;
 import org.ta4j.core.BarSeries;
 
+/**
+ * Factory that produces and caches a {@link TickBarBuilder} bound to a series.
+ *
+ * <p>Maintains a single builder instance per factory to count ticks across
+ * calls and emit a bar every configured number of ticks.
+ */
 public class TickBarBuilderFactory implements BarBuilderFactory {
 
     private final int tickCount;

@@ -37,8 +37,19 @@ import org.ta4j.core.reports.TradingStatement;
 import org.ta4j.core.reports.TradingStatementGenerator;
 
 /**
- * Allows backtesting multiple strategies and comparing them to find out which
- * is the best.
+ * High-level facility to backtest multiple strategies and generate reports.
+ *
+ * <p>Wraps a {@link BarSeriesManager} and a {@link org.ta4j.core.reports.TradingStatementGenerator}
+ * to execute one or more {@link org.ta4j.core.Strategy} instances over a
+ * {@link org.ta4j.core.BarSeries}, producing {@link org.ta4j.core.reports.TradingStatement}
+ * results suitable for comparison.
+ *
+ * <h2>Execution semantics</h2>
+ * <ul>
+ * <li>Runs strategies in parallel for performance</li>
+ * <li>Uses configured {@link TradeExecutionModel} to determine execution price/time</li>
+ * <li>Applies provided transaction and holding {@link org.ta4j.core.analysis.cost.CostModel}s</li>
+ * </ul>
  */
 public class BacktestExecutor {
 

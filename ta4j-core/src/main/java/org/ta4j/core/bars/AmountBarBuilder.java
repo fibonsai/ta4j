@@ -36,8 +36,11 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * An amount bar is sampled after a fixed number of amount (= price * volume)
- * have been traded.
+ * Builder for amount-based bars that close after a fixed traded notional.
+ *
+ * <p>An amount bar accumulates traded notional (price × volume) until a threshold
+ * is reached, then emits a bar. Remainders are carried to the next bar. The
+ * amount can be provided explicitly or derived from per-tick volume and close price.
  */
 public class AmountBarBuilder implements BarBuilder {
 

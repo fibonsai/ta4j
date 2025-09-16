@@ -28,8 +28,9 @@ import org.ta4j.core.Trade;
 import org.ta4j.core.num.Num;
 
 /**
- * With this cost model, the trading costs for opening or closing a position
- * accrue linearly.
+ * Transaction cost model where fees scale linearly with trade value.
+ *
+ * <p>Fee is computed as: feePerPosition × price × amount for each trade.
  */
 public class LinearTransactionCostModel implements CostModel {
 

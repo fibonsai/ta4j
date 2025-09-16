@@ -28,13 +28,10 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
 /**
- * An execution model for {@link BarSeriesManager} objects.
+ * Execution policy that operates on the current bar's close price.
  *
- * Executes trades on the current bar being considered using the closing price.
- *
- * This is used for strategies that explicitly trade just before the bar closes
- * at index `t`, in order to execute new or close existing trades as close as
- * possible to the closing price.
+ * <p>Simulates trading just before a bar closes at index {@code t}. Useful for
+ * strategies that make decisions and execute at the end of each bar.
  */
 public class TradeOnCurrentCloseModel implements TradeExecutionModel {
 

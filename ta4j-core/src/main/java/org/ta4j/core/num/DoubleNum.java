@@ -29,14 +29,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
- * Representation of {@link Double}. High performance, lower precision.
+ * Double-backed implementation of {@link Num} optimized for speed.
  *
- * *
- * <p>
- * It uses a precision of up to {@value #EPS} decimal places.
- *
- * @apiNote the delegate should never become a NaN value. No self NaN checks are
- *          provided.
+ * <p>Favors performance over precision. Suitable for large backtests where minor
+ * floating-point error is acceptable. Operations return {@link NaN} for invalid
+ * cases (e.g., division by zero).
  */
 public class DoubleNum implements Num {
 

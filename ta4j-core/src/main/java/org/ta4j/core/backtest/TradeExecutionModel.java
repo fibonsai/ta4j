@@ -28,10 +28,12 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
 /**
- * An execution model for {@link BarSeriesManager} objects.
+ * Strategy for simulating when and at what price trades are executed during backtests.
  *
- * Used for backtesting. Instructs {@link BarSeriesManager} on how to execute
- * trades.
+ * <p>Defines the execution policy used by {@link BarSeriesManager} when a
+ * {@link org.ta4j.core.Strategy} signals an operation. Implementations specify
+ * the bar index and price used for the executed trade (e.g., current close or
+ * next open).
  */
 public interface TradeExecutionModel {
 

@@ -31,15 +31,12 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 
 /**
- * Cached {@link Indicator indicator}.
+ * Performance-optimized {@link Indicator} that caches computed values.
  *
- * <p>
- * Caches the calculated results of the indicator to avoid calculating the same
- * index of the indicator twice. The caching drastically speeds up access to
- * indicator values. Caching is especially recommended when indicators calculate
- * their values based on the values of other indicators. Such nested indicators
- * can call {@link #getValue(int)} multiple times without the need to
- * {@link #calculate(int)} again.
+ * <p>Caching avoids recomputation of values at the same index and is especially
+ * beneficial for indicators built on top of other indicators. The cache length
+ * adapts to the series' {@link BarSeries#getMaximumBarCount()} and automatically
+ * discards leading results as the series rolls forward.
  */
 public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
 

@@ -37,17 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Representation of arbitrary precision {@link BigDecimal}. A {@code Num}
- * consists of a {@code BigDecimal} with arbitrary {@link MathContext}
- * (precision and rounding mode).
+ * Arbitrary-precision {@link BigDecimal}-backed implementation of {@link Num}.
  *
- * <p>
- * It uses a precision of up to {@value #DEFAULT_PRECISION} decimal places.
- *
- * @see BigDecimal
- * @see MathContext
- * @see RoundingMode
- * @see Num
+ * <p>Provides high precision arithmetic using a configurable {@link MathContext}
+ * with default precision {@value #DEFAULT_PRECISION}. Prefer this for accuracy-
+ * sensitive backtests and analysis; prefer {@link DoubleNum} for performance.
  */
 public final class DecimalNum implements Num {
 

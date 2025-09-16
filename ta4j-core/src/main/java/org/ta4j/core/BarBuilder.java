@@ -28,6 +28,47 @@ import java.time.Instant;
 
 import org.ta4j.core.num.Num;
 
+/**
+ * Builder for constructing immutable {@link Bar} instances and optionally
+ * adding them to a target {@link BarSeries}.
+ *
+ * <p>This builder abstracts the creation of bars across different bar types
+ * (time, tick, volume, amount, Heikin-Ashi, …) while ensuring number
+ * precision compatibility with the target series. Instances are typically
+ * obtained via {@link BarSeries#barBuilder()} which guarantees that the
+ * produced bars use the same {@link org.ta4j.core.num.NumFactory} as the
+ * series.
+ *
+ * <h2>Relationships</h2>
+ * <ul>
+ * <li>Created by a {@link BarBuilderFactory} that matches the series' data
+ * type</li>
+ * <li>Bound to a {@link BarSeries} through {@link #bindTo(BarSeries)} for
+ * convenient {@link #add()} operations</li>
+ * <li>Used by loaders/aggregators to compose consistent series for
+ * indicators, {@link Strategy strategies}, and backtests</li>
+ * </ul>
+ *
+ * <h2>Typical workflow</h2>
+ * <pre>{@code
+ * BarSeries series = new BaseBarSeriesBuilder()
+ *     .withName("AAPL")
+ *     .build();
+ *
+ * // Obtain a builder that is compatible with the series' Num type
+ * BarBuilder builder = series.barBuilder().bindTo(series);
+ *
+ * builder.timePeriod(Duration.ofMinutes(1))
+ *        .beginTime(begin)
+ *        .endTime(end)
+ *        .openPrice("189.12")
+ *        .highPrice("190.02")
+ *        .lowPrice("188.90")
+ *        .closePrice("189.76")
+ *        .volume("125432")
+ *        .add(); // builds and appends to series
+ * }</pre>
+ */
 public interface BarBuilder {
 
     /**

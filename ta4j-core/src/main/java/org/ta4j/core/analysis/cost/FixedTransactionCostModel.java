@@ -28,8 +28,7 @@ import org.ta4j.core.Trade;
 import org.ta4j.core.num.Num;
 
 /**
- * With this cost model, the trading costs for opening or closing a position are
- * accrued through a constant fee per trade (i.e. a fixed fee per transaction).
+ * Transaction cost model that charges a fixed fee per trade regardless of size.
  */
 public class FixedTransactionCostModel implements CostModel {
 

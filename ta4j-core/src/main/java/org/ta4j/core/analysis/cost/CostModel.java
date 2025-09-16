@@ -27,8 +27,11 @@ import org.ta4j.core.Position;
 import org.ta4j.core.num.Num;
 
 /**
- * With the {@code CostModel}, we can include trading costs that may be incurred
- * when opening or closing a position.
+ * Abstraction for trading and holding cost calculations in backtests.
+ *
+ * <p>Cost models quantify fees and expenses associated with trading and position
+ * maintenance. Implementations include fixed and linear transaction costs as
+ * well as borrowing (shorting) costs.
  */
 public interface CostModel {
 

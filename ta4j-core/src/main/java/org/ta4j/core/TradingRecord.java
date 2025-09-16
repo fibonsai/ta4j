@@ -33,14 +33,12 @@ import org.ta4j.core.analysis.cost.CostModel;
 import org.ta4j.core.num.Num;
 
 /**
- * A {@code TradingRecord} holds the full history/record of a trading session
- * when running a {@link Strategy strategy}. It can be used to:
+ * Execution log and position ledger for a strategy run.
  *
- * <ul>
- * <li>analyze the performance of a {@link Strategy strategy}
- * <li>check whether some {@link Rule rules} are satisfied (while running a
- * strategy)
- * </ul>
+ * <p>A {@code TradingRecord} captures all {@link Trade trades} placed during a
+ * backtest or live run and derives closed {@link Position positions}. It forms
+ * the input for {@link AnalysisCriterion} to evaluate strategy performance and
+ * can provide context back to {@link Rule} and {@link Strategy} evaluations.
  */
 public interface TradingRecord extends Serializable {
 

@@ -27,7 +27,83 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base implementation of a {@link Strategy}.
+ * Base implementation of a trading {@link Strategy} with comprehensive functionality.
+ * 
+ * <p>BaseStrategy is the primary concrete implementation of the Strategy interface,
+ * providing a complete trading strategy built from entry and exit rules. It handles
+ * rule evaluation, signal generation, strategy combination, and logging functionality.
+ * 
+ * <h2>Core Features</h2>
+ * <ul>
+ * <li><strong>Rule-Based Logic:</strong> Combines entry and exit rules to generate trading signals</li>
+ * <li><strong>Unstable Period Handling:</strong> Configurable warm-up period to avoid premature signals</li>
+ * <li><strong>Strategy Combination:</strong> Support for AND, OR, and opposite strategy operations</li>
+ * <li><strong>Logging & Debugging:</strong> Built-in trace logging for signal analysis</li>
+ * <li><strong>Immutable Design:</strong> Thread-safe immutable strategy configuration</li>
+ * </ul>
+ * 
+ * <h2>Strategy Lifecycle</h2>
+ * <p>A BaseStrategy operates through a simple state-based evaluation:
+ * <ol>
+ * <li><strong>Initialization:</strong> Create strategy with entry/exit rules and optional parameters</li>
+ * <li><strong>Warm-up Phase:</strong> Skip unstable bars to allow indicators to stabilize</li>
+ * <li><strong>Signal Generation:</strong> Evaluate rules at each bar to generate entry/exit signals</li>
+ * <li><strong>Decision Making:</strong> Return boolean signals based on current position state</li>
+ * </ol>
+ * 
+ * <h2>Signal Logic</h2>
+ * <ul>
+ * <li><strong>Entry Signals:</strong> Generated when no position is open and entry rule is satisfied</li>
+ * <li><strong>Exit Signals:</strong> Generated when position is open and exit rule is satisfied</li>
+ * <li><strong>No Action:</strong> When in unstable period or when rules are not satisfied</li>
+ * </ul>
+ * 
+ * <h2>Best Practices</h2>
+ * <ul>
+ * <li><strong>Unstable Period:</strong> Set to maximum warm-up period of any underlying indicators</li>
+ * <li><strong>Rule Design:</strong> Ensure entry and exit rules are logically consistent</li>
+ * <li><strong>Testing:</strong> Enable trace logging to debug strategy behavior</li>
+ * <li><strong>Validation:</strong> Validate rules are not null during construction</li>
+ * </ul>
+ * 
+ * <h2>Thread Safety</h2>
+ * <p>BaseStrategy instances are <strong>immutable and thread-safe</strong> after construction.
+ * The same strategy instance can be safely shared across multiple threads for concurrent
+ * backtesting or analysis.
+ * 
+ * <h2>Usage Example</h2>
+ * <pre>{@code
+ * // Create indicators
+ * ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
+ * SMAIndicator sma20 = new SMAIndicator(closePrice, 20);
+ * RSIIndicator rsi = new RSIIndicator(closePrice, 14);
+ * 
+ * // Create rules
+ * Rule entryRule = new CrossedUpIndicatorRule(closePrice, sma20)
+ *     .and(new UnderIndicatorRule(rsi, 30)); // Price above SMA and RSI oversold
+ * 
+ * Rule exitRule = new CrossedDownIndicatorRule(closePrice, sma20)
+ *     .or(new OverIndicatorRule(rsi, 70)); // Price below SMA or RSI overbought
+ * 
+ * // Create strategy
+ * Strategy strategy = new BaseStrategy("SMA-RSI Strategy", entryRule, exitRule, 20);
+ * 
+ * // Use strategy for backtesting
+ * TradingRecord record = new BaseTradingRecord();
+ * for (int i = strategy.getUnstableBars(); i <= series.getEndIndex(); i++) {
+ *     if (strategy.shouldEnter(i, record)) {
+ *         record.enter(i, series.getBar(i).getClosePrice(), series.numFactory().one());
+ *     } else if (strategy.shouldExit(i, record)) {
+ *         record.exit(i, series.getBar(i).getClosePrice(), series.numFactory().one());
+ *     }
+ * }
+ * }</pre>
+ * 
+ * @see Strategy
+ * @see Rule
+ * @see TradingRecord
+ * @see org.ta4j.core.backtest.BacktestExecutor
+ * @since 0.1
  */
 public class BaseStrategy implements Strategy {
 
@@ -54,47 +130,72 @@ public class BaseStrategy implements Strategy {
     private int unstableBars;
 
     /**
-     * Constructor.
+     * Creates a strategy with the specified entry and exit rules.
+     * 
+     * <p>This is the simplest constructor that creates a strategy with:
+     * <ul>
+     * <li>Auto-generated name based on class name</li>
+     * <li>No unstable period (starts trading immediately)</li>
+     * </ul>
+     * 
+     * <p><strong>Warning:</strong> Consider setting an appropriate unstable period
+     * if your rules use indicators that need time to stabilize.
      *
-     * @param entryRule the entry rule
-     * @param exitRule  the exit rule
+     * @param entryRule the rule that determines when to enter positions (must not be null)
+     * @param exitRule  the rule that determines when to exit positions (must not be null)
+     * @throws IllegalArgumentException if either rule is null
      */
     public BaseStrategy(Rule entryRule, Rule exitRule) {
         this(null, entryRule, exitRule, 0);
     }
 
     /**
-     * Constructor.
+     * Creates a strategy with entry/exit rules and a specified unstable period.
+     * 
+     * <p>This constructor is recommended when your strategy uses indicators that
+     * require a warm-up period. The unstable period prevents the strategy from
+     * generating signals before indicators have sufficient data.
      *
-     * @param entryRule    the entry rule
-     * @param exitRule     the exit rule
-     * @param unstableBars strategy will ignore possible signals at
-     *                     {@code index < unstableBars}
+     * @param entryRule    the rule that determines when to enter positions (must not be null)
+     * @param exitRule     the rule that determines when to exit positions (must not be null)
+     * @param unstableBars the number of initial bars to ignore for signal generation (must be >= 0)
+     * @throws IllegalArgumentException if rules are null or unstableBars < 0
      */
     public BaseStrategy(Rule entryRule, Rule exitRule, int unstableBars) {
         this(null, entryRule, exitRule, unstableBars);
     }
 
     /**
-     * Constructor.
+     * Creates a named strategy with the specified entry and exit rules.
+     * 
+     * <p>Providing a descriptive name helps with logging, debugging, and
+     * identification in backtesting results. The name should describe the
+     * strategy's approach (e.g., "SMA Crossover", "RSI Mean Reversion").
      *
-     * @param name      the name of the strategy
-     * @param entryRule the entry rule
-     * @param exitRule  the exit rule
+     * @param name      the descriptive name for this strategy (may be null)
+     * @param entryRule the rule that determines when to enter positions (must not be null)
+     * @param exitRule  the rule that determines when to exit positions (must not be null)
+     * @throws IllegalArgumentException if either rule is null
      */
     public BaseStrategy(String name, Rule entryRule, Rule exitRule) {
         this(name, entryRule, exitRule, 0);
     }
 
     /**
-     * Constructor.
+     * Creates a complete strategy with all configuration options.
+     * 
+     * <p>This is the most comprehensive constructor that allows full control over
+     * strategy behavior. It's the recommended constructor for production strategies
+     * that need proper naming and indicator stabilization.
+     * 
+     * <p><strong>Best Practice:</strong> Set unstableBars to the maximum warm-up
+     * period required by any indicators used in the entry or exit rules.
      *
-     * @param name         the name of the strategy
-     * @param entryRule    the entry rule
-     * @param exitRule     the exit rule
-     * @param unstableBars strategy will ignore possible signals at
-     *                     {@code index < unstableBars}
-     * @throws IllegalArgumentException if entryRule or exitRule is null
+     * @param name         the descriptive name for this strategy (may be null)
+     * @param entryRule    the rule that determines when to enter positions (must not be null)
+     * @param exitRule     the rule that determines when to exit positions (must not be null)
+     * @param unstableBars the number of initial bars to ignore for signal generation (must be >= 0)
+     * @throws IllegalArgumentException if rules are null or unstableBars < 0
      */
     public BaseStrategy(String name, Rule entryRule, Rule exitRule, int unstableBars) {
         if (entryRule == null || exitRule == null) {

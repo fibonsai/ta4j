@@ -28,13 +28,11 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
 /**
- * An execution model for {@link BarSeriesManager} objects.
+ * Execution policy that operates on the next bar's open price.
  *
- * Executes trades on the next bar at the open price.
- *
- * This is used for strategies that explicitly trade just after a new bar opens
- * at bar index `t + 1`, in order to execute new or close existing trades as
- * close as possible to the opening price.
+ * <p>Simulates trading just after a new bar opens at index {@code t + 1}.
+ * Useful for strategies that decide at bar close but execute at the next open,
+ * modeling more realistic execution constraints.
  */
 public class TradeOnNextOpenModel implements TradeExecutionModel {
 

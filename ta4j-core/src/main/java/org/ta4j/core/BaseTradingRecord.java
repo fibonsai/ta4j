@@ -33,7 +33,12 @@ import org.ta4j.core.analysis.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
 
 /**
- * Base implementation of a {@link TradingRecord}.
+ * Default implementation of {@link TradingRecord} that records trades and derives closed positions.
+ *
+ * <p>Acts as the execution log for a running {@link Strategy}. As trades are
+ * operated, the record maintains complementary BUY/SELL pairs as
+ * {@link Position positions}, enabling downstream evaluation via
+ * {@link AnalysisCriterion}.
  */
 public class BaseTradingRecord implements TradingRecord {
 

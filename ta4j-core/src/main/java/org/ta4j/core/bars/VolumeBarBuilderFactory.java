@@ -27,6 +27,12 @@ import org.ta4j.core.BarBuilder;
 import org.ta4j.core.BarBuilderFactory;
 import org.ta4j.core.BarSeries;
 
+/**
+ * Factory that produces and caches a {@link VolumeBarBuilder} bound to a series.
+ *
+ * <p>Maintains a single builder instance per factory to accumulate tick state
+ * between additions when constructing volume-threshold bars.
+ */
 public class VolumeBarBuilderFactory implements BarBuilderFactory {
 
     private final int volumeThreshold;

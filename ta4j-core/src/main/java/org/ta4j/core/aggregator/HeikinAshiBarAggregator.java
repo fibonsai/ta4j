@@ -24,7 +24,6 @@
 package org.ta4j.core.aggregator;
 
 import org.ta4j.core.Bar;
-import org.ta4j.core.BaseBar;
 import org.ta4j.core.bars.HeikinAshiBarBuilder;
 import org.ta4j.core.num.Num;
 
@@ -32,8 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Aggregates a list of {@link BaseBar bars} into another one by following
- * Heikin-Ashi logic
+ * Derives a sequence of Heikin-Ashi bars from standard OHLC bars.
+ *
+ * <p>Uses {@link org.ta4j.core.bars.HeikinAshiBarBuilder} to transform each
+ * source bar into its Heikin-Ashi equivalent, carrying forward the previous
+ * Heikin-Ashi open/close to compute the next one as per HA rules.
  */
 public class HeikinAshiBarAggregator implements BarAggregator {
 

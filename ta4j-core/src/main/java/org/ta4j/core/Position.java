@@ -34,14 +34,31 @@ import org.ta4j.core.analysis.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
 
 /**
- * A {@code Position} is a pair of two {@link Trade trades}.
- *
- * <p>
- * The exit trade has the complement type of the entry trade, i.e.:
+ * A trading position representing a complete round-trip trade consisting of an entry and exit.
+ * 
+ * <p>A Position encapsulates a complete trading transaction from opening to closing, consisting
+ * of two complementary {@link Trade trades}: an entry trade that opens the position and an
+ * exit trade that closes it. The Position class provides analysis helpers including
+ * profit/loss and return calculations, as well as trading- and holding-cost accounting via
+ * {@link org.ta4j.core.analysis.cost.CostModel}.
+ * 
+ * <h2>Position States</h2>
  * <ul>
- * <li>entry == BUY --> exit == SELL
- * <li>entry == SELL --> exit == BUY
+ * <li><strong>New:</strong> No trades have been placed yet</li>
+ * <li><strong>Opened:</strong> Entry trade placed, exit trade pending</li>
+ * <li><strong>Closed:</strong> Both entry and exit trades completed</li>
  * </ul>
+ * 
+ * <h2>Trade Complementarity</h2>
+ * <ul>
+ * <li><strong>Long Position:</strong> Entry = BUY, Exit = SELL</li>
+ * <li><strong>Short Position:</strong> Entry = SELL, Exit = BUY</li>
+ * </ul>
+ * 
+ * @see Trade
+ * @see TradingRecord
+ * @see org.ta4j.core.analysis.CashFlow
+ * @since 0.1
  */
 public class Position implements Serializable {
 

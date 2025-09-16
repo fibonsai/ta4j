@@ -36,8 +36,25 @@ import java.util.function.Function;
 import org.ta4j.core.num.Num;
 
 /**
- * A {@code Bar} is aggregated open/high/low/close/volume/etc. data over a time
- * period. It represents the "end bar" of a time period.
+ * Immutable OHLCV market data snapshot over a single aggregation period.
+ *
+ * <p>A {@code Bar} captures open, high, low, close, volume, amount, and trade
+ * count for a specific time interval. Bars are the foundational data unit for
+ * building a {@link BarSeries}, upon which indicators, rules, strategies, and
+ * analysis operate.
+ *
+ * <h2>Time semantics</h2>
+ * <ul>
+ * <li>{@link #getBeginTime()} and {@link #getEndTime()} are timestamps in UTC</li>
+ * <li>{@link #inPeriod(java.time.Instant)} checks containment within
+ *     [begin, end)</li>
+ * <li>Convenience accessors expose system-time-zone views as
+ *     {@link #getSystemZonedBeginTime()} and {@link #getSystemZonedEndTime()}</li>
+ * </ul>
+ *
+ * <h2>Usage</h2>
+ * Bars are typically produced via a {@link BarBuilder} obtained from
+ * {@link BarSeries#barBuilder()} to ensure numeric type compatibility.
  */
 public interface Bar extends Serializable {
 

@@ -28,8 +28,10 @@ import org.ta4j.core.Trade;
 import org.ta4j.core.num.Num;
 
 /**
- * With this cost model, the trading costs for borrowing a position (i.e.
- * selling a position short) accrue linearly.
+ * Borrowing (shorting) cost model accruing linearly over holding periods.
+ *
+ * <p>Applies only to short positions. Cost is proportional to the number of
+ * periods a position is held and the initial position value.
  */
 public class LinearBorrowingCostModel implements CostModel {
 

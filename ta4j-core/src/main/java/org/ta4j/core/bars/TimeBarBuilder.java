@@ -36,7 +36,13 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * A time bar is sampled after a fixed time period.
+ * Builder for time-based bars sampled over a fixed duration.
+ *
+ * <p>Used to construct {@link org.ta4j.core.BaseBar} instances where each bar
+ * represents a fixed {@link java.time.Duration}. Ensure compatibility with a
+ * target {@link org.ta4j.core.BarSeries} by acquiring this builder via the
+ * series' {@link org.ta4j.core.BarSeries#barBuilder()} or
+ * {@link TimeBarBuilderFactory}.
  */
 public class TimeBarBuilder implements BarBuilder {
 

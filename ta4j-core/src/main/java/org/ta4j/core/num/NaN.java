@@ -27,22 +27,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
- * Representation of an undefined or unrepresentable value: NaN (not a number)
+ * Representation of an undefined or unrepresentable value: NaN (not a number).
  *
- * <p>
- * Special behavior in methods such as:
- *
- * <ul>
- * <li>{@link NaN#plus(Num)} => NaN</li>
- * <li>{@link NaN#isEqual(Num)} => true</li>
- * <li>{@link NaN#isPositive()} => false</li>
- * <li>{@link NaN#isNegativeOrZero()} => false</li>
- * <li>{@link NaN#min(Num)} => NaN</li>
- * <li>{@link NaN#max(Num)} => NaN</li>
- * <li>{@link NaN#doubleValue()} => {@link Double#NaN}</li>
- * <li>{@link NaN#intValue()} => throws
- * {@link UnsupportedOperationException}</li>
- * </ul>
+ * <p>Propagates through arithmetic operations and comparisons. Equality is
+ * defined such that {@code NaN.isEqual(NaN)} returns true to simplify indicator
+ * logic. Conversions to floating types return IEEE-754 NaN where applicable.
  */
 public class NaN implements Num {
 

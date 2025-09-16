@@ -30,15 +30,13 @@ import org.ta4j.core.analysis.CashFlow;
 import org.ta4j.core.num.Num;
 
 /**
- * Maximum drawdown criterion, returned in decimal format.
+ * Maximum drawdown criterion, returned as a decimal in [0, 1].
  *
- * <p>
- * The maximum drawdown measures the largest loss. Its value can be within the
- * range of [0,1], e.g. a maximum drawdown of {@code +1} (= +100%) means a total
- * loss, a maximum drawdown of {@code 0} (= 0%) means no loss at all.
+ * <p>Measures the largest peak-to-trough decline of the equity curve produced by
+ * {@link CashFlow}. A value of 1.0 indicates a total loss; 0.0 indicates no
+ * drawdown.
  *
- * @see <a href=
- *      "http://en.wikipedia.org/wiki/Drawdown_%28economics%29">https://en.wikipedia.org/wiki/Drawdown_(economics)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Drawdown_(economics)">Drawdown</a>
  */
 public class MaximumDrawdownCriterion extends AbstractAnalysisCriterion {
 

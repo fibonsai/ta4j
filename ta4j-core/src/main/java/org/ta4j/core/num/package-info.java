@@ -22,16 +22,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * {@link org.ta4j.core.num.Num Num} interface and implementations of
- * {@link org.ta4j.core.num.NaN NaN}, {@link org.ta4j.core.num.DoubleNum
- * DoubleNum} and {@link org.ta4j.core.num.DecimalNum PrecisionNum}.
+ * Numeric abstraction and implementations used across ta4j.
  *
- * <p>
- * The {@link org.ta4j.core.num.Num Num interface} enables the use of different
- * delegates (Double, {@link java.math.BigDecimal BigDecimal}, ...) for storage
- * and calculations in {@link org.ta4j.core.BarSeries BarSeries},
- * {@link org.ta4j.core.Bar Bars}, {@link org.ta4j.core.Indicator Indicators}
- * and {@link org.ta4j.core.criteria.AbstractAnalysisCriterion
- * AnalysisCriterions}.
+ * <p>Defines {@link org.ta4j.core.num.Num} and factories for creating numbers
+ * with consistent precision per series. Choose between:
+ * <ul>
+ * <li>{@link org.ta4j.core.num.DoubleNum} - fast, lower precision</li>
+ * <li>{@link org.ta4j.core.num.DecimalNum} - precise, BigDecimal-backed</li>
+ * <li>{@link org.ta4j.core.num.NaN} - sentinel for undefined values</li>
+ * </ul>
+ *
+ * <p>Use the series' {@link org.ta4j.core.num.NumFactory} to construct values
+ * compatible with that series' numeric type.
  */
 package org.ta4j.core.num;

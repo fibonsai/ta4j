@@ -36,7 +36,11 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * A tick bar is sampled after a fixed number of ticks.
+ * Builder for tick-based bars that close after a fixed number of ticks.
+ *
+ * <p>Accumulates tick data and emits a new bar every {@code tickCount} ticks,
+ * carrying no tick remainder. High/low are tracked incrementally from close
+ * prices. The builder supports incremental updates and snapshot via {@link #build()}.
  */
 public class TickBarBuilder implements BarBuilder {
 

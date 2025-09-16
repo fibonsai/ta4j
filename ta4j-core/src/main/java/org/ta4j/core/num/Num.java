@@ -28,12 +28,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
- * Ta4js definition of operations that must be fulfilled by an object that
- * should be used as base for calculations.
+ * Numeric abstraction used across ta4j for indicator, rule, and criterion math.
  *
- * @see Num
- * @see DoubleNum
- * @see DecimalNum
+ * <p>Provides a uniform API over pluggable numeric backends (double vs BigDecimal).
+ * Use {@link NumFactory} to obtain instances with the correct precision for a
+ * given {@link org.ta4j.core.BarSeries}.
  */
 public interface Num extends Comparable<Num>, Serializable {
 

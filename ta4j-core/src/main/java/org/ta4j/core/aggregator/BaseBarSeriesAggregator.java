@@ -27,12 +27,14 @@ import java.util.List;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.BaseBarSeriesBuilder;
 
 /**
- * Aggregates a {@link BaseBarSeries} into another one using a
- * {@link BarAggregator}.
+ * Default {@link BarSeriesAggregator} that delegates bar combination to a {@link BarAggregator}.
+ *
+ * <p>Converts the input series to its underlying list of bars, aggregates them,
+ * and returns a new {@link org.ta4j.core.BaseBarSeries} via
+ * {@link org.ta4j.core.BaseBarSeriesBuilder}.
  */
 public class BaseBarSeriesAggregator implements BarSeriesAggregator {
 

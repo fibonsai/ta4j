@@ -34,8 +34,135 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
 /**
- * Allows to follow the money cash flow involved by a list of positions over a
- * bar series.
+ * Cash Flow indicator for tracking portfolio value evolution over time during strategy execution.
+ * 
+ * <p>The CashFlow class calculates and tracks the cumulative monetary performance of trading
+ * strategies by monitoring how invested capital changes with each position and price movement.
+ * It provides a time-series view of portfolio value that is essential for performance analysis,
+ * risk assessment, and strategy evaluation.
+ * 
+ * <h2>Cash Flow Calculation</h2>
+ * <p>The cash flow tracks portfolio value changes through:
+ * <ul>
+ * <li><strong>Initial Capital:</strong> Normalized to 1.0 (100% of starting capital)</li>
+ * <li><strong>Position Returns:</strong> Multiplicative returns based on entry and exit prices</li>
+ * <li><strong>Intermediate Values:</strong> Unrealized P&L during open positions</li>
+ * <li><strong>Transaction Costs:</strong> Inclusion of trading costs and holding costs</li>
+ * </ul>
+ * 
+ * <h2>Types of Cash Flow Analysis</h2>
+ * <ul>
+ * <li><strong>Single Position:</strong> Performance of an individual closed position</li>
+ * <li><strong>Trading Record:</strong> Cumulative performance across all closed positions</li>
+ * <li><strong>Real-time:</strong> Including unrealized P&L of currently open positions</li>
+ * <li><strong>Historical:</strong> Performance analysis up to a specific point in time</li>
+ * </ul>
+ * 
+ * <h2>Value Calculation Logic</h2>
+ * 
+ * <h3>Long Positions</h3>
+ * <ul>
+ * <li><strong>Return Ratio:</strong> Current Price / Entry Price</li>
+ * <li><strong>Portfolio Value:</strong> Previous Value × Return Ratio</li>
+ * <li><strong>Example:</strong> Entry at $100, current at $110 → 10% gain</li>
+ * </ul>
+ * 
+ * <h3>Short Positions</h3>
+ * <ul>
+ * <li><strong>Return Ratio:</strong> 2 - (Current Price / Entry Price)</li>
+ * <li><strong>Portfolio Value:</strong> Previous Value × Return Ratio</li>
+ * <li><strong>Example:</strong> Entry at $100, current at $90 → 10% gain</li>
+ * </ul>
+ * 
+ * <h2>Cost Integration</h2>
+ * <p>The cash flow incorporates various trading costs:
+ * <ul>
+ * <li><strong>Transaction Costs:</strong> Entry and exit commissions, spreads, slippage</li>
+ * <li><strong>Holding Costs:</strong> Financing costs, borrowing fees, storage costs</li>
+ * <li><strong>Cost Distribution:</strong> Holding costs are distributed proportionally over the position duration</li>
+ * </ul>
+ * 
+ * <h2>Performance Analysis Applications</h2>
+ * <ul>
+ * <li><strong>Equity Curve Analysis:</strong> Visual representation of strategy performance</li>
+ * <li><strong>Drawdown Calculation:</strong> Maximum peak-to-trough decline measurement</li>
+ * <li><strong>Return Metrics:</strong> Total return, annualized return, volatility calculation</li>
+ * <li><strong>Risk Assessment:</strong> Sharpe ratio, maximum drawdown, volatility analysis</li>
+ * <li><strong>Strategy Comparison:</strong> Relative performance between different strategies</li>
+ * </ul>
+ * 
+ * <h2>Real-time Monitoring</h2>
+ * <p>For live trading and strategy monitoring:
+ * <ul>
+ * <li><strong>Unrealized P&L:</strong> Current value of open positions</li>
+ * <li><strong>Portfolio Value:</strong> Combined closed and unrealized returns</li>
+ * <li><strong>Running Performance:</strong> Continuous performance tracking</li>
+ * <li><strong>Risk Metrics:</strong> Real-time risk assessment</li>
+ * </ul>
+ * 
+ * <h2>Limitations and Considerations</h2>
+ * <ul>
+ * <li><strong>Market Impact:</strong> Does not account for market impact of large orders</li>
+ * <li><strong>Liquidity:</strong> Assumes perfect liquidity for position sizing</li>
+ * <li><strong>Slippage:</strong> Basic cost modeling may not reflect actual execution</li>
+ * <li><strong>Gaps:</strong> Price gaps can cause execution differences from theoretical values</li>
+ * </ul>
+ * 
+ * <h2>Usage Examples</h2>
+ * <pre>{@code
+ * // Single position cash flow analysis
+ * Position position = createAndClosePosition(); // Entry and exit trades
+ * CashFlow positionCashFlow = new CashFlow(series, position);
+ * 
+ * // Get final portfolio value after position
+ * Num finalValue = positionCashFlow.getValue(series.getEndIndex());
+ * Num totalReturn = finalValue.minus(series.numFactory().one()); // -1 for percentage
+ * 
+ * // Trading record cash flow (multiple positions)
+ * TradingRecord record = backtestStrategy(strategy, series);
+ * CashFlow strategyCashFlow = new CashFlow(series, record);
+ * 
+ * // Calculate performance metrics
+ * List<Num> cashFlowValues = new ArrayList<>();
+ * for (int i = 0; i <= series.getEndIndex(); i++) {
+ *     cashFlowValues.add(strategyCashFlow.getValue(i));
+ * }
+ * 
+ * // Calculate maximum drawdown
+ * Num maxValue = series.numFactory().one();
+ * Num maxDrawdown = series.numFactory().zero();
+ * for (Num value : cashFlowValues) {
+ *     if (value.isGreaterThan(maxValue)) {
+ *         maxValue = value;
+ *     }
+ *     Num drawdown = maxValue.minus(value).dividedBy(maxValue);
+ *     if (drawdown.isGreaterThan(maxDrawdown)) {
+ *         maxDrawdown = drawdown;
+ *     }
+ * }
+ * 
+ * // Real-time cash flow with open position
+ * int currentIndex = series.getEndIndex();
+ * CashFlow realTimeCashFlow = new CashFlow(series, record, currentIndex);
+ * Num currentPortfolioValue = realTimeCashFlow.getValue(currentIndex);
+ * 
+ * // Use in analysis criteria
+ * TotalProfitCriterion totalProfit = new TotalProfitCriterion();
+ * MaximumDrawdownCriterion maxDD = new MaximumDrawdownCriterion();
+ * 
+ * Num profit = totalProfit.calculate(series, record);
+ * Num drawdown = maxDD.calculate(series, record);
+ * 
+ * // Chart equity curve
+ * // cashFlowValues can be plotted to show strategy performance over time
+ * }</pre>
+ * 
+ * @see Position
+ * @see TradingRecord
+ * @see org.ta4j.core.analysis.cost.CostModel
+ * @see org.ta4j.core.analysis.criteria.TotalProfitCriterion
+ * @see org.ta4j.core.analysis.criteria.MaximumDrawdownCriterion
+ * @since 0.1
  */
 public class CashFlow implements Indicator<Num> {
 
@@ -46,10 +173,19 @@ public class CashFlow implements Indicator<Num> {
     private final List<Num> values;
 
     /**
-     * Constructor for cash flows of a closed position.
+     * Creates a cash flow indicator for analyzing a single closed position.
+     * 
+     * <p>This constructor calculates the cash flow evolution for a specific closed position,
+     * showing how the portfolio value would change from the position entry to exit.
+     * The cash flow starts at 1.0 (representing 100% of initial capital) and tracks
+     * the multiplicative returns through the position lifecycle.
+     * 
+     * <p><strong>Requirements:</strong> The position must be closed (both entry and exit trades present).
+     * For open positions, use the constructor with finalIndex parameter.
      *
-     * @param barSeries the bar series
-     * @param position  a single position
+     * @param barSeries the bar series containing price data (must not be null)
+     * @param position  the closed position to analyze (must not be null and must be closed)
+     * @throws IllegalArgumentException if position is not closed or barSeries/position is null
      */
     public CashFlow(BarSeries barSeries, Position position) {
         this.barSeries = barSeries;
@@ -60,22 +196,41 @@ public class CashFlow implements Indicator<Num> {
     }
 
     /**
-     * Constructor for cash flows of closed positions of a trading record.
+     * Creates a cash flow indicator for analyzing all closed positions in a trading record.
+     * 
+     * <p>This constructor calculates the cumulative cash flow evolution across all closed
+     * positions in the trading record. Each position's return is compounded with previous
+     * returns to show the overall portfolio performance progression.
+     * 
+     * <p>Open positions are ignored in this calculation. To include the current unrealized
+     * P&L of open positions, use the constructor with finalIndex parameter.
      *
-     * @param barSeries     the bar series
-     * @param tradingRecord the trading record
+     * @param barSeries     the bar series containing price data (must not be null)
+     * @param tradingRecord the trading record with positions to analyze (must not be null)
+     * @throws IllegalArgumentException if barSeries or tradingRecord is null
      */
     public CashFlow(BarSeries barSeries, TradingRecord tradingRecord) {
         this(barSeries, tradingRecord, tradingRecord.getEndIndex(barSeries));
     }
 
     /**
-     * Constructor.
+     * Creates a cash flow indicator including unrealized P&L up to a specific index.
+     * 
+     * <p>This constructor calculates cash flow for all closed positions plus the unrealized
+     * profit/loss of any currently open position up to the specified finalIndex. This is
+     * essential for real-time portfolio monitoring and strategy analysis during execution.
+     * 
+     * <p>The cash flow includes:
+     * <ul>
+     * <li>Realized returns from all closed positions</li>
+     * <li>Unrealized returns from open position (if any) up to finalIndex</li>
+     * <li>Transaction and holding costs appropriately distributed</li>
+     * </ul>
      *
-     * @param barSeries     the bar series
-     * @param tradingRecord the trading record
-     * @param finalIndex    index up until cash flows of open positions are
-     *                      considered
+     * @param barSeries     the bar series containing price data (must not be null)
+     * @param tradingRecord the trading record with positions (must not be null)
+     * @param finalIndex    the index up to which to calculate unrealized P&L (must be valid)
+     * @throws IllegalArgumentException if barSeries/tradingRecord is null or finalIndex is invalid
      */
     public CashFlow(BarSeries barSeries, TradingRecord tradingRecord, int finalIndex) {
         this.barSeries = barSeries;

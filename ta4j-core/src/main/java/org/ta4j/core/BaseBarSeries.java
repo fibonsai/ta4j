@@ -34,7 +34,15 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.num.NumFactory;
 
 /**
- * Base implementation of a {@link BarSeries}.
+ * Default {@link BarSeries} implementation providing index-stable rolling windows.
+ *
+ * <p>Maintains an internal list of {@link Bar} objects and supports:
+ * <ul>
+ * <li>Index-stable removal of leading bars when {@link #setMaximumBarCount(int)}
+ *     is applied</li>
+ * <li>Creation of subseries via {@link #getSubSeries(int, int)}</li>
+ * <li>Series-compatible bar construction via {@link #barBuilder()}</li>
+ * </ul>
  */
 public class BaseBarSeries implements BarSeries {
 

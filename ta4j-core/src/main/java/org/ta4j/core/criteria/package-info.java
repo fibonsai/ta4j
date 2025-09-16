@@ -22,11 +22,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * Analysis criteria.
+ * Performance criteria for evaluating and comparing strategies.
  *
- * <p>
- * This package contains different criteria which can be used to calculate the
- * performance of a {@link org.ta4j.core.Strategy trading strategy} and to
- * compare two {@link org.ta4j.core.Strategy trading strategies} to each other.
+ * <p>Includes drawdown, PnL, returns, and position statistics criteria that
+ * implement {@link org.ta4j.core.AnalysisCriterion}. Criteria consume
+ * {@link org.ta4j.core.TradingRecord} and/or {@link org.ta4j.core.Position}
+ * and often leverage {@link org.ta4j.core.analysis.CashFlow} or
+ * {@link org.ta4j.core.analysis.Returns}.
  */
 package org.ta4j.core.criteria;

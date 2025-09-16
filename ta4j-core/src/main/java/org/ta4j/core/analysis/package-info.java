@@ -22,11 +22,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * Analysis.
+ * Analysis utilities for cash flow, returns, and cost modeling.
  *
- * <p>
- * This package contains instruments to inspect backtesting results like the
- * {@link org.ta4j.core.analysis.CashFlow CashFlow} and to calculate
- * {@link org.ta4j.core.analysis.cost.CostModel trading costs}.
+ * <p>Provides indicators for evaluating portfolio value evolution and per-period
+ * returns, along with cost models used during performance computation.
  */
 package org.ta4j.core.analysis;

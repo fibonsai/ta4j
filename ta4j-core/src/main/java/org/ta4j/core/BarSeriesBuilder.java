@@ -24,7 +24,14 @@
 package org.ta4j.core;
 
 /**
- * Interface to build a bar series.
+ * Builder interface for creating {@link BarSeries} instances.
+ *
+ * <p>Concrete builders (e.g., {@link BaseBarSeriesBuilder}) encapsulate the
+ * configuration required to assemble a bar series, including the underlying
+ * {@link org.ta4j.core.num.NumFactory} and the {@link BarBuilderFactory} used to
+ * create compatible {@link Bar} instances. Using a builder ensures that all
+ * interrelated components are wired consistently for subsequent indicator and
+ * strategy calculations.
  */
 public interface BarSeriesBuilder {
 

@@ -27,6 +27,12 @@ import org.ta4j.core.BarBuilder;
 import org.ta4j.core.BarBuilderFactory;
 import org.ta4j.core.BarSeries;
 
+/**
+ * Factory that produces {@link TimeBarBuilder} instances bound to a target series.
+ *
+ * <p>Ensures numeric precision compatibility by using the series' NumFactory
+ * and binding the builder for convenient {@link TimeBarBuilder#add()} usage.
+ */
 public class TimeBarBuilderFactory implements BarBuilderFactory {
 
     @Override

@@ -35,8 +35,12 @@ import org.ta4j.core.analysis.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
 
 /**
- * A manager for {@link BarSeries} objects used for backtesting. Allows to run a
- * {@link Strategy trading strategy} over the managed bar series.
+ * Coordinates running a {@link Strategy} over a {@link BarSeries} for backtesting.
+ *
+ * <p>Provides multiple {@code run(...)} overloads to control entry type, trade
+ * amount, and index range. Delegates order placement to a configurable
+ * {@link TradeExecutionModel}, enabling different execution assumptions (e.g.,
+ * next-bar open vs current-bar close).
  */
 public class BarSeriesManager {
 

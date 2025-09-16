@@ -29,13 +29,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ta4j.core.Bar;
-import org.ta4j.core.BaseBar;
 import org.ta4j.core.bars.TimeBarBuilder;
 import org.ta4j.core.num.Num;
 
 /**
- * Aggregates a list of {@link BaseBar bars} into another one by
- * {@link BaseBar#timePeriod duration}.
+ * Time-based upsampler that combines smaller bars into larger-duration bars.
+ *
+ * <p>Aggregates chronologically ordered input bars into bars whose
+ * {@link Bar#getTimePeriod()} equals a target {@link Duration}. The target
+ * duration must be a whole multiple of the source duration.
+ *
+ * <h2>Behavior</h2>
+ * <ul>
+ * <li>Open = first source open; Close = last source close</li>
+ * <li>High/Low = extrema across the window</li>
+ * <li>Volume/Amount/Trades = summed across the window</li>
+ * <li>Bar end time = begin time + target duration</li>
+ * </ul>
  */
 public class DurationBarAggregator implements BarAggregator {
 
@@ -45,8 +55,7 @@ public class DurationBarAggregator implements BarAggregator {
     private final boolean onlyFinalBars;
 
     /**
-     * Duration based bar aggregator. Only bars with elapsed time (final bars) will
-     * be created.
+     * Creates an aggregator that outputs only fully elapsed (final) bars.
      *
      * @param timePeriod the target time period that aggregated bars should have
      */
@@ -55,11 +64,11 @@ public class DurationBarAggregator implements BarAggregator {
     }
 
     /**
-     * Duration based bar aggregator.
+     * Creates an aggregator with control over whether to output partial (pending) bars.
      *
      * @param timePeriod    the target time period that aggregated bars should have
      * @param onlyFinalBars if true, only bars with elapsed time (final bars) will
-     *                      be created, otherwise also pending bars
+     *                      be created; if false, a trailing partial bar may be emitted
      */
     public DurationBarAggregator(Duration timePeriod, boolean onlyFinalBars) {
         this.timePeriod = timePeriod;
@@ -67,12 +76,11 @@ public class DurationBarAggregator implements BarAggregator {
     }
 
     /**
-     * Aggregates the {@code bars} into another one by {@link #timePeriod}.
+     * Aggregates the input bars into target-duration bars.
      *
-     * @param bars the actual bars with actual {@code timePeriod}
-     * @return the aggregated bars with new {@link #timePeriod}
-     * @throws IllegalArgumentException if {@link #timePeriod} is not a
-     *                                  multiplication of actual {@code timePeriod}
+     * @param bars the source bars with a uniform base duration
+     * @return aggregated bars with the configured {@link #timePeriod}
+     * @throws IllegalArgumentException if the target duration is not a multiple of the source duration
      */
     @Override
     public List<Bar> aggregate(List<Bar> bars) {

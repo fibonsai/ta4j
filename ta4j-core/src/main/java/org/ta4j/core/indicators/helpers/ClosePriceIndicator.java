@@ -28,17 +28,61 @@ import org.ta4j.core.indicators.AbstractIndicator;
 import org.ta4j.core.num.Num;
 
 /**
- * Close price indicator.
- *
- * <p>
- * Returns the close price of a bar.
+ * Close Price indicator that extracts the closing price from each bar in a series.
+ * 
+ * <p>This is one of the most fundamental indicators in technical analysis, providing
+ * access to the closing price of each bar. The close price is typically the most
+ * important price point as it represents the final agreed-upon value between buyers
+ * and sellers at the end of each trading period.
+ * 
+ * <h2>Characteristics</h2>
+ * <ul>
+ * <li><strong>Stable:</strong> Always stable (no warm-up period required)</li>
+ * <li><strong>Performance:</strong> Direct access to bar data with no calculations</li>
+ * <li><strong>Foundation:</strong> Base for most other technical indicators</li>
+ * <li><strong>Universal:</strong> Available for all market data types</li>
+ * </ul>
+ * 
+ * <h2>Common Usage</h2>
+ * <ul>
+ * <li><strong>Moving Averages:</strong> Calculate SMA, EMA, etc. on close prices</li>
+ * <li><strong>Oscillators:</strong> RSI, MACD, Stochastic calculations</li>
+ * <li><strong>Price Rules:</strong> Compare close price with indicators or thresholds</li>
+ * <li><strong>Trend Analysis:</strong> Identify price trends and patterns</li>
+ * </ul>
+ * 
+ * <h2>Usage Example</h2>
+ * <pre>{@code
+ * // Create close price indicator
+ * ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
+ * 
+ * // Use with moving averages
+ * SMAIndicator sma20 = new SMAIndicator(closePrice, 20);
+ * EMAIndicator ema12 = new EMAIndicator(closePrice, 12);
+ * 
+ * // Use with oscillators
+ * RSIIndicator rsi = new RSIIndicator(closePrice, 14);
+ * 
+ * // Use in trading rules
+ * Rule priceAboveSMA = new OverIndicatorRule(closePrice, sma20);
+ * }</pre>
+ * 
+ * @see org.ta4j.core.indicators.helpers.OpenPriceIndicator
+ * @see org.ta4j.core.indicators.helpers.HighPriceIndicator
+ * @see org.ta4j.core.indicators.helpers.LowPriceIndicator
+ * @see org.ta4j.core.Bar#getClosePrice()
+ * @since 0.1
  */
 public class ClosePriceIndicator extends AbstractIndicator<Num> {
 
     /**
-     * Constructor.
+     * Creates a Close Price indicator for the specified bar series.
+     * 
+     * <p>This indicator provides direct access to the closing price of each bar
+     * in the series without any calculations or transformations.
      *
-     * @param series the bar series
+     * @param series the bar series to extract close prices from (must not be null)
+     * @throws IllegalArgumentException if series is null
      */
     public ClosePriceIndicator(BarSeries series) {
         super(series);
@@ -49,7 +93,14 @@ public class ClosePriceIndicator extends AbstractIndicator<Num> {
         return getBarSeries().getBar(index).getClosePrice();
     }
 
-    /** @return {@code 0} */
+    /**
+     * Returns the number of unstable bars for this indicator.
+     * 
+     * <p>The close price indicator is always stable as it requires no calculations
+     * or historical data - it simply returns the close price of the requested bar.
+     * 
+     * @return always returns 0 (immediately stable)
+     */
     @Override
     public int getCountOfUnstableBars() {
         return 0;

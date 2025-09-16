@@ -35,7 +35,13 @@ import org.ta4j.core.num.NaN;
 import org.ta4j.core.num.Num;
 
 /**
- * Allows to compute the return rate of a price time-series.
+ * Indicator computing per-period returns (log or arithmetic) for a strategy.
+ *
+ * <p>Generates a sequence of returns aligned with the {@link BarSeries},
+ * calculated from net prices that include trading and holding costs via
+ * {@link org.ta4j.core.analysis.CashFlow#addCost}. The first index has no
+ * return value (NaN). Useful for computing aggregate statistics such as mean
+ * return, volatility, and Sharpe ratio.
  */
 public class Returns implements Indicator<Num> {
 

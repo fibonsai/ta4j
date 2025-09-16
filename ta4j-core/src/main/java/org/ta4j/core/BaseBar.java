@@ -30,7 +30,11 @@ import java.util.Objects;
 import org.ta4j.core.num.Num;
 
 /**
- * Base implementation of a {@link Bar}.
+ * Default immutable implementation of {@link Bar}.
+ *
+ * <p>Stores OHLCV data along with trade count and time bounds. The constructor
+ * enforces consistent time semantics by deriving any missing bound from the
+ * provided values and validating the resulting {@link #getTimePeriod()}.
  */
 public class BaseBar implements Bar {
 

@@ -22,11 +22,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * Aggregator.
+ * Aggregation utilities for transforming bars and bar series.
  *
- * <p>
- * This package can be used to aggregate {@link org.ta4j.core.Bar bars} by
- * various conditions, e.g. by
- * {@link org.ta4j.core.aggregator.DurationBarAggregator duration}.
+ * <p>Provides interfaces and implementations to convert a list of
+ * {@link org.ta4j.core.Bar} instances or a full {@link org.ta4j.core.BarSeries}
+ * into aggregated forms:
+ * <ul>
+ * <li>{@link org.ta4j.core.aggregator.BarAggregator} - low-level list-to-list aggregation</li>
+ * <li>{@link org.ta4j.core.aggregator.BarSeriesAggregator} - series-to-series aggregation</li>
+ * <li>{@link org.ta4j.core.aggregator.DurationBarAggregator} - time-based upsampling (e.g., 1m → 5m)</li>
+ * <li>{@link org.ta4j.core.aggregator.HeikinAshiBarAggregator} - Heikin-Ashi transformation</li>
+ * </ul>
  */
 package org.ta4j.core.aggregator;
